@@ -3,12 +3,15 @@ Module for common application functionality for Lambda functions
 """
 import os
 import sys
-from datetime import datetime, timezone
+import traceback
 import uuid
+from datetime import datetime, timezone
+
 from abc import abstractmethod
 from aws_lambda_powertools.utilities import parameters
 from aws_lambda_powertools.utilities.data_classes.common import DictWrapper
 from aws_lambda_powertools.utilities.typing.lambda_context import LambdaContext
+
 from spine_aws_common.logger import Logger, configure_logging_adapter
 from spine_aws_common.utilities import StopWatch
 
@@ -59,16 +62,18 @@ class LambdaApplication:
 
         except InitialisationError as e:
             if self.log_object is None:
-                print(e)
+                print(self._format_exception(e))
             else:
                 self.log_object.write_log("LAMBDAINIT001", None, {"message": e})
             raise e
         except Exception as e:  # pylint:disable=broad-except
             if self.log_object is None:
-                print(e)
+                print(self._format_exception(e))
             else:
                 self.log_object.write_log(
-                    "LAMBDA9999", sys.exc_info(), {"error": str(e)}
+                    "LAMBDA9999",
+                    sys.exc_info(),
+                    {"error": self._format_exception(e)},
                 )
             raise e
 
@@ -172,6 +177,9 @@ class LambdaApplication:
         if isinstance(self.context, dict):
             return self.context.get("aws_request_id", "unknown")
         return "unknown"
+
+    def _format_exception(self, exception) -> str:
+        return str(exception).strip("\n")
 
 
 def overrides(base_class):
