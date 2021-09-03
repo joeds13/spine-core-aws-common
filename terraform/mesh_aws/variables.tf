@@ -16,8 +16,8 @@ variable "config" {
   }
 
   validation {
-    condition     = var.config.environment == "integration" || var.config.environment == "production"
-    error_message = "The environment value must be either \"integration\" or \"production\"."
+    condition     = var.config.environment == "integration" || var.config.environment == "reference" || var.config.environment == "production"
+    error_message = "The environment value must be either \"integration\", \"reference\" or \"production\"."
   }
 }
 

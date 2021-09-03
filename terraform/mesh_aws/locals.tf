@@ -3,6 +3,7 @@ locals {
 
   mesh_url = {
     integration = "https://msg.intspineservices.nhs.uk"
+    reference   = "https://mesh-sync.refspineservices.nhs.uk"
     production  = "https://mesh-sync.spineservices.nhs.uk"
   }
 
